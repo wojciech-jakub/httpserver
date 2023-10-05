@@ -1,13 +1,15 @@
-package data
+package main
 
 import (
-	"fmt"
 	"math"
 	"strconv"
 )
 
-func CalculateSTDEV(data []string) float64 {
-	fData := parseFloat(data)
+func calculateSTDDEV(data []string) (float64, error) {
+	fData, err := parseFloat(data)
+	if err != nil {
+		return float64(0), err
+	}
 	mean := calculateMean(fData)
 
 	sumSquaredDifferences := 0.0
@@ -19,7 +21,7 @@ func CalculateSTDEV(data []string) float64 {
 
 	standardDeviation := math.Sqrt(variance)
 
-	return standardDeviation
+	return standardDeviation, nil
 }
 
 func calculateMean(numbers []float64) float64 {
@@ -30,17 +32,17 @@ func calculateMean(numbers []float64) float64 {
 	return sum / float64(len(numbers))
 }
 
-func parseFloat(sNumbers []string) []float64 {
+func parseFloat(sNumbers []string) ([]float64, error) {
 	numbers := make([]float64, len(sNumbers))
 	for _, numStr := range sNumbers {
 		if numStr != "" {
 			num, err := strconv.ParseFloat(numStr, 64)
 			if err != nil {
-				fmt.Println("Error parsing number:", err)
+				return nil, err
 			} else {
 				numbers = append(numbers, num)
 			}
 		}
 	}
-	return numbers
+	return numbers, nil
 }
